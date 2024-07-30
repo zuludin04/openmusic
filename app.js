@@ -26,6 +26,7 @@ const ProducerService = require("./src/services/rabitmq/ProducerService");
 const ExportValidator = require("./src/validators/export");
 const StorageService = require("./src/services/storage/StorageService");
 const path = require("path");
+const Inert = require("@hapi/inert");
 
 const init = async () => {
   const albumService = new AlbumService();
@@ -35,7 +36,7 @@ const init = async () => {
   const playlistService = new PlaylistService();
   const playlistSongService = new PlaylistSongService();
   const storageService = new StorageService(
-    path.resolve(__dirname, "public/file/images")
+    path.resolve(__dirname, "src/api/album/file/covers")
   );
 
   const server = Hapi.server({
@@ -51,6 +52,9 @@ const init = async () => {
   await server.register([
     {
       plugin: Jwt,
+    },
+    {
+      plugin: Inert,
     },
   ]);
 

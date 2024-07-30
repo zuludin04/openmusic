@@ -72,7 +72,7 @@ class AlbumHandler {
     const { id: albumId } = request.params;
 
     const filename = await this._storageService.writeFile(cover, cover.hapi);
-    const fileLocation = `/upload/images/${filename}`;
+    const fileLocation = `http://${process.env.HOST}:${process.env.PORT}/covers/${filename}`;
 
     await this._service.updateAlbumCover(albumId, fileLocation);
 

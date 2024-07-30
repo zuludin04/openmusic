@@ -22,13 +22,15 @@ class AlbumService {
   }
 
   async getAlbums() {
-    const result = await pool.query("SELECT * FROM album");
+    const result = await pool.query(
+      "SELECT id, name, cover AS `coverUrl FROM album"
+    );
     return result.rows;
   }
 
   async getAlbumById(id) {
     const query = {
-      text: `SELECT * FROM album WHERE id = $1`,
+      text: `SELECT id, name, year, cover AS "coverUrl" FROM album WHERE id = $1`,
       values: [id],
     };
     const result = await pool.query(query);
