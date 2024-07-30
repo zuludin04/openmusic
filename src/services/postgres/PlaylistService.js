@@ -1,8 +1,8 @@
 const { nanoid } = require("nanoid");
-const pool = require("../database");
-const InvariantError = require("../exceptions/InvariantError");
-const NotFoundError = require("../exceptions/NotFoundError");
-const AuthorizationError = require("../exceptions/AuthorizationError");
+const pool = require("../../database");
+const InvariantError = require("../../exceptions/InvariantError");
+const NotFoundError = require("../../exceptions/NotFoundError");
+const AuthorizationError = require("../../exceptions/AuthorizationError");
 
 class PlaylistService {
   async addPlaylist({ name, owner }) {

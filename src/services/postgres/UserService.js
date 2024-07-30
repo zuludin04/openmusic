@@ -1,8 +1,8 @@
 const { nanoid } = require("nanoid");
-const pool = require("../database");
-const InvariantError = require("../exceptions/InvariantError");
+const pool = require("../../database");
+const InvariantError = require("../../exceptions/InvariantError");
 const bcrypt = require("bcrypt");
-const AuthenticationError = require("../exceptions/AuthenticationError");
+const AuthenticationError = require("../../exceptions/AuthenticationError");
 
 class UserService {
   async addUser({ username, password, fullname }) {

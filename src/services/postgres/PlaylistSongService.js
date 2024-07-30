@@ -1,6 +1,6 @@
 const { nanoid } = require("nanoid");
-const pool = require("../database");
-const InvariantError = require("../exceptions/InvariantError");
+const pool = require("../../database");
+const InvariantError = require("../../exceptions/InvariantError");
 
 class PlaylistSongService {
   async addSongIntoPlaylist({ playlistId, songId }) {

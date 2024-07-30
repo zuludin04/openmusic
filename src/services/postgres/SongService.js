@@ -1,7 +1,7 @@
 const { nanoid } = require("nanoid");
-const pool = require("../database");
-const InvariantError = require("../exceptions/InvariantError");
-const NotFoundError = require("../exceptions/NotFoundError");
+const pool = require("../../database");
+const InvariantError = require("../../exceptions/InvariantError");
+const NotFoundError = require("../../exceptions/NotFoundError");
 
 class SongService {
   async addSong({ title, year, genre, performer, duration, albumId }) {
