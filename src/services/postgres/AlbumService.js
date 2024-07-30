@@ -63,6 +63,18 @@ class AlbumService {
       throw new NotFoundError("Fail delete Album");
     }
   }
+
+  async updateAlbumCover(id, file) {
+    const query = {
+      text: "UPDATE album SET cover = $1 WHERE id = $2 RETURNING id",
+      values: [file, id],
+    };
+    const result = await pool.query(query);
+
+    if (!result.rows.length) {
+      throw new NotFoundError("Fail to Update Album Cover");
+    }
+  }
 }
 
 module.exports = AlbumService;
