@@ -4,6 +4,10 @@ const InvariantError = require("../../exceptions/InvariantError");
 const NotFoundError = require("../../exceptions/NotFoundError");
 
 class LikeService {
+  constructor(cacheService) {
+    this._cacheService = cacheService;
+  }
+
   async likeAnAlbum(userId, albumId) {
     const id = nanoid(16);
     const query = {
@@ -16,6 +20,7 @@ class LikeService {
       throw new InvariantError("Fail to Like an Album");
     }
 
+    await this._cacheService.delete(`albumlikes:${albumId}`);
     return result.rows[0].id;
   }
 
@@ -29,17 +34,33 @@ class LikeService {
     if (!result.rows.length) {
       throw new NotFoundError("Fail to Dislike an Album");
     }
+
+    await this._cacheService.delete(`albumlikes:${albumId}`);
   }
 
-  async getAlbumLikes() {
-    const query = {
-      text: `SELECT COUNT(*) AS total
-        FROM likes
-        INNER JOIN album ON album.id = likes.album_id`,
-      values: [],
-    };
-    const result = await pool.query(query);
-    return result.rows[0].total;
+  async getAlbumLikes(albumId) {
+    try {
+      const result = await this._cacheService.get(`albumlikes:${albumId}`);
+      return {
+        source: "cache",
+        data: result,
+      };
+      // eslint-disable-next-line no-unused-vars
+    } catch (e) {
+      const query = {
+        text: `SELECT COUNT(*) AS total
+          FROM likes
+          INNER JOIN album ON album.id = likes.album_id`,
+        values: [],
+      };
+      const result = await pool.query(query);
+      const total = result.rows[0].total;
+      await this._cacheService.set(`albumlikes:${albumId}`, total);
+      return {
+        source: "db",
+        data: total,
+      };
+    }
   }
 
   async checkUserAlbumLike(albumId, userId) {

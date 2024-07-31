@@ -28,8 +28,10 @@ const StorageService = require("./src/services/storage/StorageService");
 const path = require("path");
 const Inert = require("@hapi/inert");
 const LikeService = require("./src/services/postgres/LikeService");
+const CacheService = require("./src/services/redis/CacheService");
 
 const init = async () => {
+  const cacheService = new CacheService();
   const albumService = new AlbumService();
   const songService = new SongService();
   const userService = new UserService();
@@ -39,7 +41,7 @@ const init = async () => {
   const storageService = new StorageService(
     path.resolve(__dirname, "src/api/album/file/covers")
   );
-  const likeService = new LikeService();
+  const likeService = new LikeService(cacheService);
 
   const server = Hapi.server({
     port: environment.port,
