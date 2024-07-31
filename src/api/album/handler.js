@@ -1,7 +1,8 @@
 class AlbumHandler {
-  constructor(service, storageService, validator) {
+  constructor(service, storageService, likeService, validator) {
     this._service = service;
     this._storageService = storageService;
+    this._likeService = likeService;
     this._validator = validator;
 
     this.postAlbumHandler = this.postAlbumHandler.bind(this);
@@ -9,6 +10,9 @@ class AlbumHandler {
     this.putAlbumByIdHandler = this.putAlbumByIdHandler.bind(this);
     this.deleteAlbumByIdHandler = this.deleteAlbumByIdHandler.bind(this);
     this.postAlbumCoverHandler = this.postAlbumCoverHandler.bind(this);
+    this.postLikeAlbumHandler = this.postLikeAlbumHandler.bind(this);
+    this.deleteAlbumByIdHandler = this.deleteAlbumByIdHandler.bind(this);
+    this.getTotalAlbumLikesHandler = this.getTotalAlbumLikesHandler.bind(this);
   }
 
   async postAlbumHandler(request, h) {
@@ -82,6 +86,43 @@ class AlbumHandler {
     });
     response.code(201);
     return response;
+  }
+
+  async postLikeAlbumHandler(request, h) {
+    const { id: albumId } = request.params;
+    const { id: credentialId } = request.auth.credentials;
+
+    await this._likeService.likeAnAlbum(credentialId, albumId);
+
+    const response = h.response({
+      status: "success",
+      message: "You Like this Album",
+    });
+
+    response.code(201);
+    return response;
+  }
+
+  async deleteAlbumByIdHandler(request, _) {
+    const { id } = request.params;
+    const { id: credentialId } = request.auth.credentials;
+
+    await this._likeService.dislikeAnAlbum(id, credentialId);
+
+    return {
+      status: "success",
+      message: "You Dislike this Album",
+    };
+  }
+
+  async getTotalAlbumLikesHandler() {
+    const album = await this._likeService.getAlbumLikes();
+    return {
+      status: "success",
+      data: {
+        likes: album,
+      },
+    };
   }
 }
 

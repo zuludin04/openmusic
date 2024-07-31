@@ -27,6 +27,7 @@ const ExportValidator = require("./src/validators/export");
 const StorageService = require("./src/services/storage/StorageService");
 const path = require("path");
 const Inert = require("@hapi/inert");
+const LikeService = require("./src/services/postgres/LikeService");
 
 const init = async () => {
   const albumService = new AlbumService();
@@ -38,6 +39,7 @@ const init = async () => {
   const storageService = new StorageService(
     path.resolve(__dirname, "src/api/album/file/covers")
   );
+  const likeService = new LikeService();
 
   const server = Hapi.server({
     port: environment.port,
@@ -80,6 +82,7 @@ const init = async () => {
       options: {
         service: albumService,
         storageService,
+        likeService,
         validator: AlbumValidator,
       },
     },
