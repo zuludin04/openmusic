@@ -77,6 +77,19 @@ class AlbumService {
       throw new NotFoundError("Fail to Update Album Cover");
     }
   }
+
+  async verifyAlbumExistence(id) {
+    const query = {
+      text: "SELECT * FROM album WHERE id = $1",
+      values: [id],
+    };
+
+    const result = await pool.query(query);
+
+    if (!result.rows.length) {
+      throw new NotFoundError("Album Not Found");
+    }
+  }
 }
 
 module.exports = AlbumService;

@@ -59,7 +59,7 @@ const routes = (handler) => [
   {
     method: "DELETE",
     path: "/albums/{id}/likes",
-    handler: handler.deleteAlbumByIdHandler,
+    handler: handler.postDislikeAlbumHandler,
     options: {
       auth: "openmusic_jwt",
     },

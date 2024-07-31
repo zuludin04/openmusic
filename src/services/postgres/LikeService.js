@@ -8,7 +8,7 @@ class LikeService {
     const id = nanoid(16);
     const query = {
       text: `INSERT INTO likes VALUES($1, $2, $3) RETURNING id`,
-      values: [id, userId, albumId],
+      values: [id, albumId, userId],
     };
     const result = await pool.query(query);
 
@@ -21,7 +21,7 @@ class LikeService {
 
   async dislikeAnAlbum(albumId, userId) {
     const query = {
-      text: `DELETE FROM likes WHERE album_id = $1 AND user_id = $2`,
+      text: `DELETE FROM likes WHERE album_id = $1 AND user_id = $2 RETURNING id`,
       values: [albumId, userId],
     };
     const result = await pool.query(query);
@@ -36,10 +36,22 @@ class LikeService {
       text: `SELECT COUNT(*) AS total
         FROM likes
         INNER JOIN album ON album.id = likes.album_id`,
-      values: [playlistId],
+      values: [],
     };
     const result = await pool.query(query);
     return result.rows[0].total;
+  }
+
+  async checkUserAlbumLike(albumId, userId) {
+    const query = {
+      text: "SELECT * FROM likes WHERE album_id = $1 AND user_id = $2",
+      values: [albumId, userId],
+    };
+    const result = await pool.query(query);
+
+    if (result.rowCount == 1) {
+      throw new InvariantError("Album Already Liked");
+    }
   }
 }
 
