@@ -36,10 +36,15 @@ const routes = (handler) => [
   },
   {
     method: "GET",
-    path: "/covers/{param*}",
-    handler: {
-      directory: {
-        path: path.resolve(__dirname, "file"),
+    path: "/covers/{path}",
+    config: {
+      auth: false,
+      cors: { origin: ["*"] },
+      handler: {
+        directory: {
+          path: path.resolve(__dirname, "file/covers"),
+          listing: true,
+        },
       },
     },
   },
